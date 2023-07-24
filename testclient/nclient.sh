@@ -5,7 +5,7 @@ client_executable="./client"
 
 # 服务器主机和端口
 server_host="127.0.0.1"
-server_port="8080"
+server_port="7099"
 
 # 主循环
 while true; do

@@ -1,9 +1,9 @@
 #include <iostream>
-#include "poll/mac_poll.h"
-#include "select/mac_select.h"
-#include "epoll/kqueue.h"
-#include "spst/spst.h"
-#include "mpst/mpst.h"
+#include "../models/poll/mac_poll.h"
+#include "../models/select/mac_select.h"
+#include "../models/epoll/kqueue.h"
+#include "../models/spst/spst.h"
+#include "../models/mpst/mpst.h"
 
 enum IOModelType{
     IOModelType_spst = 0,

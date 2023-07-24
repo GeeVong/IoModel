@@ -53,14 +53,48 @@ int kqueue_darwin(int argc, char *argv[])
         perror("listen\n");
     }
 
+    /*
+     int kq = kqueue();：创建一个 kqueue 实例，并将其返回的文件描述符保存在 kq 变量中。
+     kqueue 是一个用于事件驱动编程的机制，它可以监视多个文件描述符上发生的事件。
+    */
     int kq = kqueue();
+
+    /*
+          定义了两个变量，ev 和 events。ev 是用于描述事件的 struct kevent 结构体变量，
+          events 是一个 struct kevent 类型的数组，用于存储触发的事件。
+    */
     struct kevent ev, events[EPOLL_SIZE] = {0};
 
+    /*
+         使用 EV_SET 宏初始化 ev，并设置以下参数：
+        sockfd：要监听的文件描述符。
+        EVFILT_READ：要监听的事件类型，这里是读事件。
+        EV_ADD：标记要添加监听的事件。
+        其他参数为0或NULL。
+    */
     EV_SET(&ev, sockfd, EVFILT_READ, EV_ADD, 0, 0, NULL);
+
+    /*
+         使用 kevent 函数将事件 ev 添加到 kqueue 实例 kq 中进行监听。
+         这里的监听操作是具体地触发读事件。
+    */
     kevent(kq, &ev, 1, NULL, 0, NULL);
 
+//    EV_SET(&ev, clientfd, EVFILT_READ, EV_ADD, 0, 0, NULL);
+//    kevent(kq, &ev, 1, NULL, 0, NULL);
     while (1)
     {
+        /*
+        kevent 函数的调用，用于监听事件并获取已触发的事件。
+        等待并获取已触发的事件，并将其存储在 events 数组中，nready 则表示触发的事件数量。
+            kq：kqueue 实例的文件描述符。
+            NULL：表示不关心触发的事件。
+            0：表示忽略特殊的事件筛选标志。
+            events：事件数组，用于存储已触发的事件。
+            EPOLL_SIZE：events 数组的大小，指定了最多可以存储多少个事件。
+            NULL：kevent 函数的超时参数，这里设置为无超时。
+            nready：表示触发的事件数量，可以根据 nready 的值来遍历 events 数组，并处理对应的事件。
+        */
         int nready = kevent(kq, NULL, 0, events, EPOLL_SIZE, NULL);
         if (nready == -1)
         {
